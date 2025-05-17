@@ -1,12 +1,17 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from tensorflow.keras.models import load_model # type: ignore
 from tensorflow.keras.preprocessing import image # type: ignore
 import numpy as np
 import os
 
+# Make sure the uploads directory exists
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
 class InferenceModel:
     """
-    A class to load a trained model and handle file uploads for predictions.
+    A class to load a trained model and handle file uploads and predictions via API endpoints.
     """
 
     def __init__(self, model_path):
@@ -16,45 +21,89 @@ class InferenceModel:
         Args:
             model_path (str): Path to the saved Keras model.
         """
-        self.model = load_model(model_path)
+        try:
+            self.model = load_model(model_path)
+            print(f"Model loaded successfully from {model_path}")
+        except Exception as e:
+            print(f"Error loading model from {model_path}: {e}")
+            self.model = None # Set model to None if loading fails
+
         self.app = Flask(__name__)
-        self.app.config['UPLOAD_FOLDER'] = 'uploads'
+        self.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
         self.model_path = model_path
+        # Removed self.predictions as we are returning results directly
 
-        @self.app.route('/', methods=['GET', 'POST'])
-        def upload_file():
-            """
-            Handle file upload and prediction requests.
+        # --- API Endpoints ---
 
-            Returns:
-            --------
-            str
-                The rendered HTML template with the result or error message.
+        @self.app.route('/')
+        def index():
             """
-            if request.method == 'POST':
-                # check if the post request has the file part
-                if 'file' not in request.files:
-                    return render_template('index.html', error='no file part')
-                file = request.files['file']
-                # if user does not select file, browser also
-                # submit an empty part without filename
-                if file.filename == '':
-                    return render_template('index.html', error='no selected file')
-                if file and self.allowed_file(file.filename):
-                    # save the uploaded file to the uploads directory
-                    filename = os.path.join(self.app.config['UPLOAD_FOLDER'], file.filename)
-                    file.save(filename)
-                    # predict if the image is Real or Fake
-                    prediction, prediction_percentage = self.predict_image(filename)
-                    # clean up the uploaded file
-                    os.remove(filename)
-                    # determine result message
-                    result = 'Fake' if prediction >= 0.5 else 'Real'
-                    # render result to the user
-                    return render_template('index.html', result=result, prediction_percentage=prediction_percentage)
-                else:
-                    return render_template('index.html', error='allowed file types are png, jpg, jpeg')
+            Serve the main index.html file.
+            """
+            # This route remains for serving the HTML page, which will use JavaScript
+            # to interact with the /upload endpoint.
             return render_template('index.html')
+
+        @self.app.route('/upload', methods=['POST'])
+        def upload_file_api():
+            """
+            Handle file upload, perform prediction, and return results directly.
+            Suitable for clients like Postman expecting a single response.
+            """
+            if self.model is None:
+                 return jsonify({'error': 'Model not loaded. Cannot perform prediction.'}), 500
+
+            # check if the post request has the file part
+            if 'file' not in request.files:
+                return jsonify({'error': 'No file part in the request'}), 400
+
+            file = request.files['file']
+
+            # if user does not select file, browser also
+            # submit an empty part without filename
+            if file.filename == '':
+                return jsonify({'error': 'No selected file'}), 400
+
+            if file and self.allowed_file(file.filename):
+                # Use the original filename for saving, as we'll delete it immediately
+                # For production, using a unique name is safer to avoid conflicts
+                filepath = os.path.join(self.app.config['UPLOAD_FOLDER'], file.filename)
+
+                try:
+                    # Save the uploaded file temporarily
+                    file.save(filepath)
+
+                    # Predict if the image is Real or Fake
+                    prediction, prediction_percentage = self.predict_image(filepath)
+
+                    # Determine result message
+                    result_status = 'Fake' if prediction >= 0.5 else 'Real'
+
+                    # Clean up the uploaded file immediately after prediction
+                    os.remove(filepath)
+
+                    # Return the results directly as a JSON payload
+                    return jsonify({
+                        'result': result_status,
+                        'prediction_percentage': round(prediction_percentage, 2) # Round for cleaner output
+                    }), 200
+
+                except Exception as e:
+                    # Clean up the file if an error occurred after saving
+                    if os.path.exists(filepath):
+                        os.remove(filepath)
+                    print(f"Error during prediction: {e}")
+                    return jsonify({'error': f'An error occurred during prediction: {e}'}), 500
+
+            else:
+                return jsonify({'error': 'Allowed file types are png, jpg, jpeg'}), 400
+
+        # Removed the /results/<prediction_id> endpoint as it's not needed
+        # for the direct response approach requested for Postman interaction.
+        # If you still need it for the HTML's asynchronous behavior, you can add it back.
+        # @self.app.route('/results/<prediction_id>', methods=['GET'])
+        # def get_prediction_results(prediction_id):
+
 
     def allowed_file(self, filename):
         """
@@ -85,25 +134,40 @@ class InferenceModel:
         Returns:
         --------
         tuple
-            A tuple containing the prediction and the prediction percentage.
+            A tuple containing the raw prediction score (0-1) and the prediction percentage (0-100).
         """
-        img = image.load_img(file_path, target_size=(128, 128))
-        img_array = image.img_to_array(img)
-        img_array = np.expand_dims(img_array, axis=0)
-        result = self.model.predict(img_array)
-        prediction = result[0][0]
-        prediction_percentage = prediction * 100
-        return prediction, prediction_percentage
+        if self.model is None:
+             raise RuntimeError("Model is not loaded.")
+
+        try:
+            # The model expects images of size 128x128
+            img = image.load_img(file_path, target_size=(128, 128))
+            img_array = image.img_to_array(img)
+            img_array = np.expand_dims(img_array, axis=0) # Add batch dimension
+            # The model was trained with rescaling layer, so no need to scale here if it's part of the model
+            # If your model does NOT have the rescaling layer, you might need: img_array = img_array / 255.0
+
+            result = self.model.predict(img_array)
+            prediction = result[0][0] # Get the single prediction value
+            prediction_percentage = float(prediction * 100) # Ensure it's a float for JSON
+            return prediction, prediction_percentage
+        except Exception as e:
+            print(f"Error predicting image {file_path}: {e}")
+            raise # Re-raise the exception after logging
+
 
     def run(self):
         """
         Run the Flask application with the loaded model.
         """
-        self.app.run(debug=True)
+        # For local development, debug=True is useful
+        self.app.run(debug=True, host='127.0.0.1', port=5000) # Default Flask port is 5000
 
 
+# Run the Flask app
 if __name__ == '__main__':
     # inference
+    # Make sure this model path is correct relative to the file
     model_path = 'deepfake_detector_model.keras'
     inference_model = InferenceModel(model_path)
     inference_model.run()
