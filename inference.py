@@ -1,4 +1,6 @@
+# inference.py
 from flask import Flask, request, render_template, jsonify
+from flask_cors import CORS
 from tensorflow.keras.models import load_model # type: ignore
 from tensorflow.keras.preprocessing import image # type: ignore
 import numpy as np
@@ -29,6 +31,10 @@ class InferenceModel:
             self.model = None # Set model to None if loading fails
 
         self.app = Flask(__name__)
+        CORS(self.app, resources={r"/upload": {"origins": "http://localhost:3000"}}) # <--- Enable CORS for /upload from your Next.js app
+        # Alternatively, for development, you can allow all origins for all routes:
+        # CORS(self.app) # This allows all origins for all routes. Be more specific in production.
+
         self.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
         self.model_path = model_path
         # Removed self.predictions as we are returning results directly
@@ -44,12 +50,15 @@ class InferenceModel:
             # to interact with the /upload endpoint.
             return render_template('index.html')
 
-        @self.app.route('/upload', methods=['POST'])
+        @self.app.route('/upload', methods=['POST', 'OPTIONS']) # <--- Add OPTIONS method for preflight requests
         def upload_file_api():
             """
             Handle file upload, perform prediction, and return results directly.
             Suitable for clients like Postman expecting a single response.
             """
+            if request.method == 'OPTIONS': # <--- Handle preflight request
+                return self._build_cors_preflight_response()
+
             if self.model is None:
                  return jsonify({'error': 'Model not loaded. Cannot perform prediction.'}), 500
 
@@ -83,10 +92,13 @@ class InferenceModel:
                     os.remove(filepath)
 
                     # Return the results directly as a JSON payload
-                    return jsonify({
+                    response = jsonify({
                         'result': result_status,
                         'prediction_percentage': round(prediction_percentage, 2) # Round for cleaner output
-                    }), 200
+                    })
+                    # Flask-CORS handles headers, but you can add them explicitly if needed
+                    # response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+                    return response, 200
 
                 except Exception as e:
                     # Clean up the file if an error occurred after saving
@@ -98,12 +110,13 @@ class InferenceModel:
             else:
                 return jsonify({'error': 'Allowed file types are png, jpg, jpeg'}), 400
 
-        # Removed the /results/<prediction_id> endpoint as it's not needed
-        # for the direct response approach requested for Postman interaction.
-        # If you still need it for the HTML's asynchronous behavior, you can add it back.
-        # @self.app.route('/results/<prediction_id>', methods=['GET'])
-        # def get_prediction_results(prediction_id):
 
+    def _build_cors_preflight_response(self): # <--- Helper for OPTIONS
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization') # Add any headers your FE might send
+        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS') # Allowed methods
+        return response
 
     def allowed_file(self, filename):
         """
@@ -168,6 +181,7 @@ class InferenceModel:
 if __name__ == '__main__':
     # inference
     # Make sure this model path is correct relative to the file
+    from flask import make_response # <--- Add this import if not already present at the top
     model_path = 'deepfake_detector_model.keras'
     inference_model = InferenceModel(model_path)
     inference_model.run()
