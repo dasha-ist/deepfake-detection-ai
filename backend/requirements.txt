@@ -1,0 +1,14 @@
+# backend/requirements.txt
+tensorflow
+jax
+jaxlib
+numpy
+dm-haiku
+matplotlib
+opencv-python
+scikit-learn
+pandas
+flask
+tqdm
+flask-cors==6.0.0
+gunicorn
