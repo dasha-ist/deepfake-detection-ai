@@ -1,0 +1,25 @@
+# docker-compose.yml (at project root)
+services:
+  frontend:
+    build:
+      context: ./frontend        # Build context is the frontend/ directory
+      dockerfile: Dockerfile # Dockerfile is named Dockerfile.frontend inside frontend/
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend         # Build context is the backend/ directory
+      dockerfile: Dockerfile # Dockerfile is named Dockerfile.backend inside backend/
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount the model file (relative to docker-compose.yml location)
+      - ./backend/deepfake_detector_model.keras:/app/deepfake_detector_model.keras:ro
+      # Persist the uploads directory
+      - backend_uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  backend_uploads:
