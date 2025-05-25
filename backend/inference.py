@@ -106,7 +106,7 @@ class InferenceModel:
 
     def _build_cors_preflight_response(self): # Helper for OPTIONS
         response = make_response()
-        response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+        response.headers.add("Access-Control-Allow-Origin", "http://34.44.254.135:3000")
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization') # Add any headers your FE might send
         response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS') # Allowed methods
         return response
