@@ -103,7 +103,7 @@ export default function PublicUploadPage() {
       formData.append("file", selectedFile);
 
       try {
-        const response = await fetch("http://localhost:5000/upload", {
+        const response = await fetch("http://34.44.254.135:5000/upload", {
           method: "POST",
           body: formData,
           signal: signal,
