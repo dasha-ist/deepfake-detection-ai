@@ -31,7 +31,7 @@ class InferenceModel:
 
         self.app = Flask(__name__)
         # Enable CORS for /upload from your Next.js app
-        CORS(self.app, resources={r"/upload": {"origins": "http://localhost:3000"}})
+        CORS(self.app, resources={r"/upload": {"origins": "http://34.44.254.135:3000"}})
 
         self.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
         self.model_path = model_path
