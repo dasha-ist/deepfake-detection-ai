@@ -1,40 +1,62 @@
-from flask import Flask, request, render_template, jsonify, make_response
+from flask import Flask, request, render_template, jsonify
 from flask_cors import CORS
 from tensorflow.keras.models import load_model # type: ignore
 from tensorflow.keras.preprocessing import image # type: ignore
 import numpy as np
 import os
+from dotenv import load_dotenv
 
-# Make sure the uploads directory exists
-UPLOAD_FOLDER = 'uploads'
+load_dotenv()
+
+# Configuration using Environment Variables
+FLASK_ENV = os.getenv('FLASK_ENV', 'production')
+
+# DF_UPLOAD_FOLDER: Environment variable for the directory where uploaded files will be temporarily stored.
+#                   Defaults to 'uploads' if not set.
+UPLOAD_FOLDER = os.getenv('DF_UPLOAD_FOLDER', 'uploads')
+
+# DF_MODEL_PATH: Environment variable for the path to the Keras model file.
+#                Defaults to 'deepfake_detector_model.keras' if not set.
+MODEL_PATH = os.getenv('DF_MODEL_PATH', 'deepfake_detector_model.keras')
+
+# FRONTEND_DOMAIN: The domain of the frontend application. Used for CORS if a specific domain is needed.
+#                  Defaults to '*' allowing all origins if not set, or you can set a specific default.
+FRONTEND_DOMAIN = os.getenv('FRONTEND_DOMAIN', '*')
+
+# CORS_ALLOWED_ORIGINS: A comma-separated list of origins allowed for CORS. Takes precedence over FRONTEND_DOMAIN if set.
+#                       e.g., "http://localhost:3000,https://your-production-frontend.com"
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', FRONTEND_DOMAIN).split(',')
+
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
 
 class InferenceModel:
     """
     A class to load a trained model and handle file uploads and predictions via API endpoints.
     """
 
-    def __init__(self, model_path):
+    def __init__(self, model_path_param):
         """
         Initialize the InferenceModel class.
 
         Args:
-            model_path (str): Path to the saved Keras model.
+            model_path_param (str): Path to the saved Keras model.
         """
         try:
-            self.model = load_model(model_path)
-            print(f"Model loaded successfully from {model_path}")
+            self.model = load_model(model_path_param)
+            print(f"Model loaded successfully from {model_path_param}")
         except Exception as e:
-            print(f"Error loading model from {model_path}: {e}")
+            print(f"Error loading model from {model_path_param}: {e}")
             self.model = None # Set model to None if loading fails
 
         self.app = Flask(__name__)
-        # Enable CORS for /upload from your Next.js app
-        CORS(self.app, resources={r"/upload": {"origins": "http://34.44.254.135:3000"}})
-
         self.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-        self.model_path = model_path
+        self.model_path = model_path_param
+        CORS(self.app, resources={r"/*": {"origins": CORS_ALLOWED_ORIGINS}})
+        print (f"CORS configured for origins: {CORS_ALLOWED_ORIGINS}") 
+
+
 
         # --- API Endpoints ---
 
@@ -45,14 +67,12 @@ class InferenceModel:
             """
             return render_template('index.html')
 
-        @self.app.route('/upload', methods=['POST', 'OPTIONS']) # Add OPTIONS method for preflight requests
+        @self.app.route('/upload', methods=['POST']) 
         def upload_file_api():
             """
             Handle file upload, perform prediction, and return results directly.
             Suitable for clients like Postman expecting a single response.
             """
-            if request.method == 'OPTIONS': # Handle preflight request
-                return self._build_cors_preflight_response()
 
             if self.model is None:
                  return jsonify({'error': 'Model not loaded. Cannot perform prediction.'}), 500
@@ -104,12 +124,7 @@ class InferenceModel:
                 return jsonify({'error': 'Allowed file types are png, jpg, jpeg'}), 400
 
 
-    def _build_cors_preflight_response(self): # Helper for OPTIONS
-        response = make_response()
-        response.headers.add("Access-Control-Allow-Origin", "http://34.44.254.135:3000")
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization') # Add any headers your FE might send
-        response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS') # Allowed methods
-        return response
+
 
     def allowed_file(self, filename):
         """
@@ -164,20 +179,14 @@ class InferenceModel:
         """
         Run the Flask application with the loaded model (for development purposes).
         """
-        # For local development, debug=True is useful
-        self.app.run(debug=True, host='127.0.0.1', port=5000)
+        #Set debug mode based on FLASK_ENV
+        debug_mode = FLASK_ENV == 'development'
+        # Listen on all interfaces (0.0.0.0) for Docker compatibility
+        self.app.run(debug=debug_mode, host='0.0.0.0', port=5000)
 
-
-# --- Application Initialization for Gunicorn and Development ---
-
-# This part ensures that the Flask app is initialized correctly whether
-# it's run directly (for development) or by Gunicorn (for production).
-model_path = 'deepfake_detector_model.keras'
-inference_instance = InferenceModel(model_path)
 
 if __name__ == '__main__':
-    # When run directly (e.g., `python inference.py`), use the development server
-    inference_instance.run()
-else:
-    # When imported by Gunicorn, expose the Flask application instance
-    app = inference_instance.app
+    #inference
+    #MODEL_PATH is defined at the top of the file via os.getenv
+    inference_model = InferenceModel(MODEL_PATH)
+    inference_model.run()
