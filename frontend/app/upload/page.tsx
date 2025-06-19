@@ -1,4 +1,3 @@
-// frontend/app/upload/page.tsx
 "use client"; // Required for using React Hooks (useState, useEffect, etc.)
 
 import Link from "next/link";
@@ -103,7 +102,10 @@ export default function PublicUploadPage() {
       formData.append("file", selectedFile);
 
       try {
-        const response = await fetch("http://34.44.254.135:5000/upload", {
+        // Construct the full API endpoint using the environment variable
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/upload`;
+
+        const response = await fetch(apiUrl, {
           method: "POST",
           body: formData,
           signal: signal,
