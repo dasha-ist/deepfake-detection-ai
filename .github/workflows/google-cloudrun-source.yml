@@ -1,0 +1,130 @@
+name: 'Deploy Frontend and Backend to Cloud Run'
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'dasha#12' # Trigger on pushes to 'main' or 'dasha#12'
+
+env:
+  PROJECT_ID: 'YOUR_GCP_PROJECT_ID'     # TODO: ***** REPLACE THIS with your actual GCP Project ID *****
+  REGION: 'us-central1'                 # TODO: Update if your region is different
+  BACKEND_SOURCE_PATH: './backend'
+  FRONTEND_SOURCE_PATH: './frontend'
+  # The Workload Identity Provider string from your GCP setup
+  GCP_WORKLOAD_IDENTITY_PROVIDER: 'projects/YOUR_PROJECT_NUMBER/locations/global/workloadIdentityPools/YOUR_POOL_ID/providers/YOUR_PROVIDER_ID' # TODO: ***** REPLACE THIS *****
+  # The Google Cloud Service Account email that GitHub Actions will impersonate
+  GCP_SERVICE_ACCOUNT: 'your-gcp-service-account-email@YOUR_GCP_PROJECT_ID.iam.gserviceaccount.com' # TODO: ***** REPLACE THIS *****
+
+
+jobs:
+  # This job prepares sanitized names and can be used as a dependency
+  prepare_names:
+    name: 'Prepare Deployment Names'
+    runs-on: ubuntu-latest
+    outputs:
+      sanitized_branch: ${{ steps.sanitize.outputs.sanitized_branch_name }}
+      backend_service_name: ${{ steps.names.outputs.backend_service_name }}
+      frontend_service_name: ${{ steps.names.outputs.frontend_service_name }}
+    steps:
+      - name: Sanitize Branch Name
+        id: sanitize
+        run: |
+          # GitHub Actions replaces non-alphanumeric in ref_name with '-' for env vars, but let's be more explicit
+          # and ensure lowercase for Cloud Run service name compatibility.
+          # This replaces any character NOT (a-z, A-Z, 0-9, or -) with a single hyphen.
+          # Then converts to lowercase.
+          # And ensures it doesn't start/end with a hyphen, and is not too long (max 63 for service name part).
+          raw_branch_name="${{ github.ref_name }}"
+          sanitized=$(echo "$raw_branch_name" | sed -e 's/[^a-zA-Z0-9-]/-/g' -e 's/--*/-/g' -e 's/^-//g' -e 's/-$//g' | tr '[:upper:]' '[:lower:]')
+          # Truncate if too long (Cloud Run service names are limited)
+          sanitized=$(echo "$sanitized" | cut -c1-30) # Adjust length as needed, considering prefix
+          echo "Raw branch: $raw_branch_name, Sanitized: $sanitized"
+          echo "sanitized_branch_name=$sanitized" >> $GITHUB_OUTPUT
+
+      - name: Define Service Names
+        id: names
+        run: |
+          sanitized_branch="${{ steps.sanitize.outputs.sanitized_branch_name }}"
+          backend_name="deepfake-backend-$sanitized_branch"
+          frontend_name="deepfake-frontend-$sanitized_branch"
+          echo "Backend service name: $backend_name"
+          echo "Frontend service name: $frontend_name"
+          echo "backend_service_name=$backend_name" >> $GITHUB_OUTPUT
+          echo "frontend_service_name=$frontend_name" >> $GITHUB_OUTPUT
+
+  # ------------- DEPLOY BACKEND -------------
+  deploy_backend:
+    name: 'Deploy Backend to Cloud Run'
+    needs: prepare_names # Depends on the sanitized names
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Required for Workload Identity Federation
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - id: 'auth_backend'
+        name: 'Authenticate to Google Cloud (Backend)'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: '${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ env.GCP_SERVICE_ACCOUNT }}'
+
+      - name: 'Deploy Backend to Cloud Run'
+        id: deploy_backend_service
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: '${{ needs.prepare_names.outputs.backend_service_name }}'
+          region: '${{ env.REGION }}'
+          source: '${{ env.BACKEND_SOURCE_PATH }}'
+          project_id: '${{ env.PROJECT_ID }}'
+          # Optional: Set environment variables for the backend Cloud Run service
+          # Remember to add sensitive values as GitHub Secrets in your repository settings
+          # env_vars: |
+          #   DATABASE_URL=${{ secrets.BACKEND_DATABASE_URL }}
+          #   API_KEY=${{ secrets.BACKEND_API_KEY }}
+          #   NODE_ENV=production
+
+      - name: 'Show Backend URL'
+        run: echo "Backend URL: ${{ steps.deploy_backend_service.outputs.url }}"
+
+  # ------------- DEPLOY FRONTEND -------------
+  deploy_frontend:
+    name: 'Deploy Frontend to Cloud Run'
+    needs: [prepare_names, deploy_backend] # Depends on names and backend deployment
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Required for Workload Identity Federation
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v4'
+
+      - id: 'auth_frontend'
+        name: 'Authenticate to Google Cloud (Frontend)'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: '${{ env.GCP_WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ env.GCP_SERVICE_ACCOUNT }}'
+
+      - name: 'Deploy Frontend to Cloud Run'
+        id: deploy_frontend_service
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: '${{ needs.prepare_names.outputs.frontend_service_name }}'
+          region: '${{ env.REGION }}'
+          source: '${{ env.FRONTEND_SOURCE_PATH }}'
+          project_id: '${{ env.PROJECT_ID }}'
+          # Optional: Set environment variables for the frontend Cloud Run service
+          # Your frontend will likely need to know the URL of the backend.
+          # You can get this from the output of the deploy_backend job.
+          env_vars: |
+            NEXT_PUBLIC_API_URL=${{ needs.deploy_backend.outputs.url }}
+            # OTHER_FRONTEND_VAR=some_value
+
+      - name: 'Show Frontend URL'
+        run: echo "Frontend URL: ${{ steps.deploy_frontend_service.outputs.url }}"
