@@ -1,0 +1,39 @@
+name: 'Deploy Frontend to VM via SSH'
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'dasha#12'
+
+jobs:
+  deploy:
+    name: 'Deploy to VM'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Deploy via SSH and Docker'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to the project directory
+            cd /home/is3yak3/deepfake-detection-ai
+
+            # Pull the latest code. This will now succeed because of the 'chown' fix.
+            echo "Fetching latest code for branch: ${{ github.ref_name }}"
+            git fetch origin
+            git reset --hard origin/${{ github.ref_name }}
+
+            # Rebuild and restart only the frontend Docker container
+            # This single command builds the new image from the updated code
+            # and replaces the old container with the new one.
+            echo "Rebuilding and restarting the frontend container..."
+            docker compose up -d --build --force-recreate frontend
+
+            # (Optional) Clean up old, unused Docker images to save space
+            docker image prune -f
+
+            echo "Docker deployment complete!"
