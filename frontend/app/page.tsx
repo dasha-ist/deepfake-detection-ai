@@ -96,7 +96,7 @@ export default function Home() {
               <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">MN</div>
             </div>
             <p className="text-gray-400">
-              <span className="text-white font-medium">500+</span> security professionals trust our tool
+              <span className="text-white font-medium">100+</span> security professionals trust our tool
             </p>
           </div>
         </AnimatedSection>
@@ -512,22 +512,12 @@ export default function Home() {
                 <ul className="space-y-2">
                   <li>
                     <Link href="#" className="text-gray-400 hover:text-white">
-                      Features
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
                       Pricing
                     </Link>
                   </li>
                   <li>
                     <Link href="#" className="text-gray-400 hover:text-white">
                       API
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Integration
                     </Link>
                   </li>
                 </ul>
@@ -537,22 +527,7 @@ export default function Home() {
                 <ul className="space-y-2">
                   <li>
                     <Link href="#" className="text-gray-400 hover:text-white">
-                      Documentation
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
                       Blog
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Guides
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Support
                     </Link>
                   </li>
                 </ul>
@@ -563,16 +538,6 @@ export default function Home() {
                   <li>
                     <Link href="#" className="text-gray-400 hover:text-white">
                       About
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Careers
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Press
                     </Link>
                   </li>
                   <li>
