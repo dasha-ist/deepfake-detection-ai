@@ -99,13 +99,6 @@ export default function Home() {
                 </Button>
             </Link>
           </div>
-          <div className="flex items-center gap-4 pt-6">
-            <div className="flex -space-x-2">
-              <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">JD</div>
-              <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">KL</div>
-              <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">MN</div>
-            </div>
-          </div>
         </AnimatedSection>
         <AnimatedSection className="flex-1 relative" animation="scale-in" delay={0.4}>
           <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-2xl blur opacity-30"></div>

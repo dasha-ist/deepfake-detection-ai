@@ -3,8 +3,8 @@ name: 'Deploy Frontend to VM via SSH'
 on:
   push:
     branches:
-      - 'main'
-      - 'dasha#12'
+      - 'main'        # Deploy when commits are pushed to main
+      - 'dasha#12'    # Also deploy when commits are pushed to this feature branch
 
 jobs:
   deploy:
@@ -12,28 +12,66 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 'Deploy via SSH and Docker'
-        uses: appleboy/ssh-action@master
+      - name: 'Deploy Code and Restart Docker'
+        # Best Practice: Pin to a specific version of the action for stability
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          # The script is enhanced for robustness and better logging
           script: |
+            # Exit immediately if a command exits with a non-zero status.
+            set -e
+
             # Navigate to the project directory
             cd /home/is3yak3/deepfake-detection-ai
 
-            # Pull the latest code. This will now succeed because of the 'chown' fix.
-            echo "Fetching latest code for branch: ${{ github.ref_name }}"
-            git fetch origin
-            git reset --hard origin/${{ github.ref_name }}
+            echo "--- Starting deployment for branch: ${{ github.ref_name }} ---"
+            echo "--- Running as user: $(whoami) ---"
 
-            # Rebuild and restart only the frontend Docker container
-            # This single command builds the new image from the updated code
-            # and replaces the old container with the new one.
-            echo "Rebuilding and restarting the frontend container..."
+            # 1. Update the code from Git
+            # ---------------------------
+            echo "1. Fetching latest code from origin..."
+            # Fetch all changes and prune remote branches that no longer exist
+            git fetch origin --prune
+
+            # Explicitly check out the branch. This is safer than assuming it's already checked out.
+            # CRITICAL: Quotes around the ref_name handle special characters like '#'
+            echo "   Checking out branch: ${{ github.ref_name }}"
+            git checkout "${{ github.ref_name }}"
+
+            # Force the local branch to match the remote branch exactly. This discards any
+            # local changes or leftover files on the server, ensuring a clean state.
+            echo "   Resetting branch to match remote..."
+            git reset --hard "origin/${{ github.ref_name }}"
+
+            # Clean the working directory of any untracked files from previous builds.
+            # -d: remove untracked directories
+            # -f: force the clean
+            # -x: remove ignored files (like node_modules, if not in docker)
+            git clean -fdx
+
+            # 2. Verify the update
+            # --------------------
+            echo "2. Verifying the code update..."
+            echo "   Current Git Status:"
+            git status
+            echo "   Latest commit being deployed:"
+            # Shows the exact commit hash and message for easy verification
+            git log -1 --oneline
+
+            # 3. Rebuild and restart the Docker container
+            # -------------------------------------------
+            echo "3. Rebuilding and restarting the frontend container..."
+            # --build: Forces a rebuild of the 'frontend' service image
+            # --force-recreate: Ensures the container is recreated even if its configuration hasn't changed
+            # -d: Runs containers in the background (detached mode)
             docker compose up -d --build --force-recreate frontend
 
-            # (Optional) Clean up old, unused Docker images to save space
+            # 4. Clean up old resources (Optional but recommended)
+            # ----------------------------------------------------
+            echo "4. Pruning unused Docker images to save space..."
             docker image prune -f
 
-            echo "Docker deployment complete!"
+            echo "Deployment successful!"
