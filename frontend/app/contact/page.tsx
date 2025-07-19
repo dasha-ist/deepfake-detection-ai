@@ -56,7 +56,7 @@ export default function ContactPage() {
           <Link href="/contact" className="text-white">
             Contact
           </Link>
-          <Link href="/login" className="text-gray-300 hover:text-white transition-colors">
+          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
             Login
           </Link>
           <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium px-8 py-3 rounded-lg transition-all duration-200 transform hover:scale-105">

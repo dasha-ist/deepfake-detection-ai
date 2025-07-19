@@ -43,7 +43,7 @@ export default function PrivacyPage() {
           <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
             Contact
           </Link>
-          <Link href="/login" className="text-gray-300 hover:text-white transition-colors">
+          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
             Login
           </Link>
           <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
@@ -253,7 +253,7 @@ export default function PrivacyPage() {
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="bg-gray-800/50 p-4 rounded-lg">
                             <h4 className="font-semibold mb-2">Encryption</h4>
-                            <p className="text-sm">All data is encrypted in transit (TLS 1.3) and at rest (AES-256).</p>
+                            <p className="text-sm">All data is encrypted in transit (TLS 1.3).</p>
                           </div>
                           <div className="bg-gray-800/50 p-4 rounded-lg">
                             <h4 className="font-semibold mb-2">Access Controls</h4>

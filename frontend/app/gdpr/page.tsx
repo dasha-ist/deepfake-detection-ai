@@ -75,7 +75,7 @@ export default function GDPRPage() {
           <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
             Contact
           </Link>
-          <Link href="/login" className="text-gray-300 hover:text-white transition-colors">
+          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
             Login
           </Link>
           <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-all duration-200">

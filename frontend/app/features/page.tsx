@@ -1,3 +1,4 @@
+// frontend/app/features/page.tsx
 "use client"
 
 import Link from "next/link"
@@ -53,15 +54,15 @@ export default function FeaturesPage() {
       icon: Layers,
       title: "Manipulation Heatmap",
       description: "Visualize exactly which parts of an image have been manipulated with our detailed heatmap.",
-      status: "Available",
-      gradient: "from-purple-500 to-blue-500",
+      status: "Coming Soon",
+      gradient: "from-orange-500 to-red-500",
     },
     {
       icon: Fingerprint,
       title: "AI Model Detection",
       description: "Identify which AI model was used to create the deepfake, helping trace the source.",
-      status: "Available",
-      gradient: "from-indigo-500 to-purple-500",
+      status: "Coming Soon",
+      gradient: "from-orange-500 to-red-500",
     },
   ]
 
@@ -113,7 +114,7 @@ export default function FeaturesPage() {
           <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
             Contact
           </Link>
-          <Link href="/login" className="text-gray-300 hover:text-white transition-colors">
+          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
             Login
           </Link>
           <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-gray-300 font-medium px-6 py-2 rounded-lg transition-all duration-200">

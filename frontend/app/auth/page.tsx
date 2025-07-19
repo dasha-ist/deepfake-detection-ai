@@ -68,7 +68,7 @@ export default function AuthPage() {
                   </CardContent>
                   <CardFooter>
                     <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
-                      Login
+                      Signin
                     </Button>
                   </CardFooter>
                 </form>
@@ -113,3 +113,4 @@ export default function AuthPage() {
     </div>
   )
 }
+

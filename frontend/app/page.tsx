@@ -25,6 +25,8 @@ import { FloatingElement } from "@/components/floating-element"
 import { RevealImage } from "@/components/reveal-image"
 import { MagneticButton } from "@/components/magnetic-button"
 import { PulseDot } from "@/components/pulse-dot"
+import { AuthModal } from "@/components/auth-modal"
+
 
 export default function Home() {
   return (
@@ -38,27 +40,31 @@ export default function Home() {
           <span className="text-xl font-bold">DeepFake Detector</span>
         </div>
         <nav className="hidden md:flex items-center gap-6">
-          <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
+          <Link href="/features" className="text-gray-300 hover:text-white transition-colors">
             Features
           </Link>
           <Link href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">
             How It Works
           </Link>
-          <Link href="#testimonials" className="text-gray-300 hover:text-white transition-colors">
-            Testimonials
+          <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
+            Contact
           </Link>
-          <Link href="#pricing" className="text-gray-300 hover:text-white transition-colors">
+          <Link href="/coming-soon" className="text-gray-300 hover:text-white transition-colors">
             Pricing
           </Link>
         </nav>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" className="hidden md:inline-flex text-gray-300 hover:text-white">
-            Login
-          </Button>
+          <AuthModal>
+            <Button variant="ghost" className="hidden md:inline-flex text-gray-300 hover:text-white">
+              Login
+            </Button>
+          </AuthModal>
           <MagneticButton intensity={0.8}>
+            <Link href="/upload">
             <Button className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
               Try Now
             </Button>
+            </Link>
           </MagneticButton>
         </div>
       </header>
@@ -81,13 +87,17 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <MagneticButton intensity={1}>
-              <Button className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 h-12 px-8 text-lg">
-                Start Scanning
-              </Button>
+            <Link href="/upload">
+                <Button className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 h-12 px-8 text-lg">
+                    Start Scanning
+                </Button>
+              </Link>
             </MagneticButton>
-            <Button variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-900 h-12 px-8 text-lg">
-              Learn More
-            </Button>
+            <Link href="/#learn-more">
+                <Button variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-900 h-12 px-8 text-lg">
+                Learn More
+                </Button>
+            </Link>
           </div>
           <div className="flex items-center gap-4 pt-6">
             <div className="flex -space-x-2">
@@ -224,7 +234,7 @@ export default function Home() {
 
       {/* How It Works Section */}
       <ParallaxSection className="py-20" speed={0.4} backgroundEffect="wave" intensity={0.8}>
-        <div className="container mx-auto px-4">
+        <div id="how-it-works" className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-16" animation="fade-up">
             <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
               Process
@@ -291,7 +301,7 @@ export default function Home() {
 
       {/* Demo Section */}
       <section className="container mx-auto px-4 py-20">
-        <div className="flex flex-col lg:flex-row items-center gap-12">
+        <div id="learn-more" className="flex flex-col lg:flex-row items-center gap-12">
           <AnimatedSection className="flex-1 space-y-8" animation="fade-up">
             <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
               Interactive Demo
@@ -511,12 +521,12 @@ export default function Home() {
                 <h3 className="font-bold mb-4">Product</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
+                    <Link href="/coming-soon" className="text-gray-400 hover:text-white">
                       Pricing
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
+                    <Link href="/coming-soon" className="text-gray-400 hover:text-white">
                       API
                     </Link>
                   </li>
@@ -525,23 +535,18 @@ export default function Home() {
               <div>
                 <h3 className="font-bold mb-4">Resources</h3>
                 <ul className="space-y-2">
-                  <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
-                      Blog
-                    </Link>
-                  </li>
                 </ul>
               </div>
               <div>
                 <h3 className="font-bold mb-4">Company</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
+                    <Link href="/about" className="text-gray-400 hover:text-white">
                       About
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
+                    <Link href="/contact" className="text-gray-400 hover:text-white">
                       Contact
                     </Link>
                   </li>
@@ -551,22 +556,22 @@ export default function Home() {
                 <h3 className="font-bold mb-4">Legal</h3>
                 <ul className="space-y-2">
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
+                    <Link href="/privacy" className="text-gray-400 hover:text-white">
                       Privacy Policy
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
+                    <Link href="/terms" className="text-gray-400 hover:text-white">
                       Terms of Service
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
+                    <Link href="/cookies" className="text-gray-400 hover:text-white">
                       Cookie Policy
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="text-gray-400 hover:text-white">
+                    <Link href="/gdpr" className="text-gray-400 hover:text-white">
                       GDPR
                     </Link>
                   </li>
