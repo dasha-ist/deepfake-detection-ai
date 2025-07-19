@@ -105,9 +105,6 @@ export default function Home() {
               <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">KL</div>
               <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-sm">MN</div>
             </div>
-            <p className="text-gray-400">
-              <span className="text-white font-medium">100+</span> security professionals trust our tool
-            </p>
           </div>
         </AnimatedSection>
         <AnimatedSection className="flex-1 relative" animation="scale-in" delay={0.4}>
