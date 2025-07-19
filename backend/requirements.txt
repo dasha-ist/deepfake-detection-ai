@@ -1,6 +1,5 @@
-tensorflow 
-tensorflow-macos 
-tensorflow-metal
+# backend/requirements.txt
+tensorflow
 jax
 jaxlib
 numpy
@@ -11,3 +10,6 @@ scikit-learn
 pandas
 flask
 tqdm
+flask-cors==6.0.0
+gunicorn
+dotenv
