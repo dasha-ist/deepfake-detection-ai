@@ -1,40 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { Shield, Target, Award, ChevronDown, ChevronUp, CheckCircle, ShieldCheck } from "lucide-react"
+import { Shield, Target, Award, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
 export default function AboutPage() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
-
-  const teamMembers = [
-    {
-      name: "Dr. Sarah Chen",
-      role: "CEO & Co-Founder",
-      bio: "Former AI researcher at Stanford with 10+ years in computer vision and deepfake detection.",
-      image: "/placeholder.svg?height=300&width=300",
-    },
-    {
-      name: "Marcus Rodriguez",
-      role: "CTO & Co-Founder",
-      bio: "Ex-Google engineer specializing in machine learning and neural network architectures.",
-      image: "/placeholder.svg?height=300&width=300",
-    },
-    {
-      name: "Dr. Emily Watson",
-      role: "Head of Research",
-      bio: "PhD in Computer Science from MIT, published 50+ papers on AI security and media forensics.",
-      image: "/placeholder.svg?height=300&width=300",
-    },
-    {
-      name: "James Park",
-      role: "Head of Product",
-      bio: "Former product lead at Meta, expert in building scalable AI-powered consumer applications.",
-      image: "/placeholder.svg?height=300&width=300",
-    },
-  ]
 
   const faqs = [
     {
@@ -65,38 +37,8 @@ export default function AboutPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6 border-b border-gray-800">
-        <Link href="/" className="flex items-center space-x-2">
-        <div className="flex items-center gap-2">
-            <ShieldCheck className="h-8 w-8 text-purple-500" />
-           </div>
-          <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-        </Link>
-        <div className="hidden md:flex items-center space-x-8">
-          <Link href="/features" className="text-gray-300 hover:text-white transition-colors">
-            Features
-          </Link>
-          <Link href="/how-it-works" className="text-gray-300 hover:text-white transition-colors">
-            How It Works
-          </Link>
-          <Link href="/about" className="text-white">
-            About
-          </Link>
-          <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-            Contact
-          </Link>
-          <Link href="/login" className="text-gray-300 hover:text-white transition-colors">
-            Login
-          </Link>
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-            Try Now
-          </Button>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-16">
+    <>
+      <div className="container mx-auto px-6 py-16 relative z-10">
         {/* Hero Section */}
         <div className="text-center mb-20">
           <div className="inline-block bg-purple-600/20 text-purple-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
@@ -228,33 +170,6 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800/50 py-12 backdrop-blur-sm">
-  <div className="container mx-auto px-6">
-    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-      
-      {/* Logo + Title */}
-      <Link href="/" className="flex items-center gap-2">
-        <ShieldCheck className="h-8 w-8 text-purple-500" />
-        <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-      </Link>
-
-      {/* Navigation Links - Visible on all screens, stacked on small screens */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center">
-        <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-          Privacy Policy
-        </Link>
-        <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
-          Terms of Service
-        </Link>
-        <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
-          Contact
-        </Link>
-      </div>
-    </div>
-  </div>
-</footer>
-    </div>
+    </>
   )
 }

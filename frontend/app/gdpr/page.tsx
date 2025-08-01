@@ -1,10 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import Link from "next/link"
-import { Shield, CheckCircle, Download, Trash2, Eye, Edit, Calendar, FileText, ShieldCheck } from "lucide-react"
+import { Shield, CheckCircle, Download, Trash2, Eye, Edit, Calendar, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -45,46 +43,19 @@ export default function GDPRPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 3000)
+    setTimeout(() => {
+      setSubmitted(false)
+      // Optionally reset form
+      // setEmail("");
+      // setRequestType("");
+    }, 3000)
   }
 
   const lastUpdated = "January 15, 2024"
 
   return (
-    <div className="min-h-screen bg-black text-gray-300">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6 border-b border-gray-800/50 backdrop-blur-sm">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="relative">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-8 w-8 text-purple-500" />
-           </div>
-          </div>
-          <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-        </Link>
-        <div className="hidden md:flex items-center space-x-8">
-          <Link href="/features" className="text-gray-300 hover:text-white transition-colors">
-            Features
-          </Link>
-          <Link href="/how-it-works" className="text-gray-300 hover:text-white transition-colors">
-            How It Works
-          </Link>
-          <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
-            About
-          </Link>
-          <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-            Contact
-          </Link>
-          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
-            Login
-          </Link>
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-all duration-200">
-            Try Now
-          </Button>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-16">
+    <>
+      <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
@@ -130,7 +101,7 @@ export default function GDPRPage() {
                             variant="outline"
                             size="sm"
                             className="border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-white bg-transparent"
-                            onClick={() => setRequestType(right.action)}
+                            onClick={() => setRequestType(right.action.replace(" ", ""))}
                           >
                             {right.action}
                           </Button>
@@ -174,16 +145,16 @@ export default function GDPRPage() {
                       id="request-type"
                       value={requestType}
                       onChange={(e) => setRequestType(e.target.value)}
-                      className="w-full bg-gray-800/50 border border-gray-700 text-white rounded-lg px-3 py-2"
+                      className="w-full bg-gray-800/50 border border-gray-700 text-white rounded-lg px-3 py-2 h-10"
                       required
                     >
                       <option value="">Select a request type</option>
-                      <option value="access">Data Access Request</option>
-                      <option value="rectification">Data Correction Request</option>
-                      <option value="erasure">Data Deletion Request</option>
-                      <option value="portability">Data Export Request</option>
-                      <option value="objection">Object to Processing</option>
-                      <option value="restriction">Restrict Processing</option>
+                      <option value="RequestData">Data Access Request</option>
+                      <option value="UpdateData">Data Correction Request</option>
+                      <option value="DeleteData">Data Deletion Request</option>
+                      <option value="ExportData">Data Export Request</option>
+                      <option value="ObjectProcessing">Object to Processing</option>
+                      <option value="RestrictProcessing">Restrict Processing</option>
                     </select>
                   </div>
                 </div>
@@ -328,34 +299,6 @@ export default function GDPRPage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800/50 py-12 backdrop-blur-sm">
-  <div className="container mx-auto px-6">
-    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-      
-      {/* Logo + Title */}
-      <Link href="/" className="flex items-center gap-2">
-        <ShieldCheck className="h-8 w-8 text-purple-500" />
-        <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-      </Link>
-
-      {/* Navigation Links - Visible on all screens, stacked on small screens */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center">
-        <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-          Privacy Policy
-        </Link>
-        <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
-          Terms of Service
-        </Link>
-        <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">
-          Cookie Policy
-        </Link>
-      </div>
-    </div>
-  </div>
-</footer>
-
-    </div>
+    </>
   )
 }

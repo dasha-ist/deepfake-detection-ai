@@ -1,10 +1,6 @@
-// frontend/app/features/page.tsx
 "use client"
 
-import Link from "next/link"
 import {
-  Shield,
-  CheckCircle,
   ImageIcon,
   Video,
   Headphones,
@@ -15,7 +11,6 @@ import {
   Eye,
   Lock,
   Globe,
-  ShieldCheck
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -55,14 +50,14 @@ export default function FeaturesPage() {
       title: "Manipulation Heatmap",
       description: "Visualize exactly which parts of an image have been manipulated with our detailed heatmap.",
       status: "Coming Soon",
-      gradient: "from-orange-500 to-red-500",
+      gradient: "from-yellow-500 to-amber-500",
     },
     {
       icon: Fingerprint,
       title: "AI Model Detection",
       description: "Identify which AI model was used to create the deepfake, helping trace the source.",
       status: "Coming Soon",
-      gradient: "from-orange-500 to-red-500",
+      gradient: "from-rose-500 to-fuchsia-500",
     },
   ]
 
@@ -90,40 +85,8 @@ export default function FeaturesPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-black text-gray-300">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6 border-b border-gray-800/50 backdrop-blur-sm">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="relative">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-8 w-8 text-purple-500" />
-           </div>
-          </div>
-          <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-        </Link>
-        <div className="hidden md:flex items-center space-x-8">
-          <Link href="/features" className="text-gray-300 font-medium">
-            Features
-          </Link>
-          <Link href="/how-it-works" className="text-gray-300 hover:text-white transition-colors">
-            How It Works
-          </Link>
-          <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
-            About
-          </Link>
-          <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-            Contact
-          </Link>
-          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
-            Login
-          </Link>
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-gray-300 font-medium px-6 py-2 rounded-lg transition-all duration-200">
-            Try Now
-          </Button>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-20">
+    <>
+      <div className="container mx-auto px-6 py-20 relative z-10">
         {/* Hero Section */}
         <div className="text-center mb-20">
           <div className="inline-block bg-purple-600/20 text-purple-400 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-purple-500/30">
@@ -206,27 +169,6 @@ export default function FeaturesPage() {
           </div>
         </div>
 
-        {/* Technical Specs */}
-        <div className="mb-24">
-          <div className="bg-gradient-to-r from-purple-600/10 to-blue-600/10 p-12 rounded-3xl border border-purple-500/20 backdrop-blur-sm">
-            <h2 className="text-3xl font-bold text-center mb-12">Technical Specifications</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-purple-400 mb-2">99.8%</div>
-                <div className="text-gray-400">Detection Accuracy</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-purple-400 mb-2">{"<5s"}</div>
-                <div className="text-gray-400">Analysis Time</div>
-              </div>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-purple-400 mb-2">5MB</div>
-                <div className="text-gray-400">Max File Size</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* CTA Section */}
         <div className="text-center bg-gradient-to-r from-purple-600/20 to-blue-600/20 p-16 rounded-3xl border border-purple-500/30 backdrop-blur-sm">
           <h2 className="text-4xl font-bold mb-6">Ready to Detect Deepfakes?</h2>
@@ -246,33 +188,6 @@ export default function FeaturesPage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800/50 py-12 backdrop-blur-sm">
-  <div className="container mx-auto px-6">
-    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-      
-      {/* Logo + Title */}
-      <Link href="/" className="flex items-center gap-2">
-        <ShieldCheck className="h-8 w-8 text-purple-500" />
-        <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-      </Link>
-
-      {/* Navigation Links - Visible on all screens, stacked on small screens */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center">
-        <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-          Privacy Policy
-        </Link>
-        <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
-          Terms of Service
-        </Link>
-        <Link href="/contact" className="text-gray-400 hover:text-white transition-colors">
-          Contact
-        </Link>
-      </div>
-    </div>
-  </div>
-</footer>
-    </div>
+    </>
   )
 }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShieldCheck, Upload, ArrowRight, AlertTriangle, CheckCircle2, Image as ImageIcon } from "lucide-react";
+import { Upload, ArrowRight, AlertTriangle, CheckCircle2, Image as ImageIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect, useRef, ChangeEvent, DragEvent } from 'react';
 
@@ -57,14 +57,13 @@ export default function PublicUploadPage() {
 
   const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     handleFileSelected(event.target.files?.[0]);
-    // Reset the input value to allow selecting the same file again
     if (event.target) {
         event.target.value = "";
     }
   };
 
   const handleDivClick = () => {
-    if (!isLoading) { // Prevent opening file dialog while loading
+    if (!isLoading) {
         fileInputRef.current?.click();
     }
   };
@@ -72,12 +71,11 @@ export default function PublicUploadPage() {
   // Drag and drop handlers
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    // TODO: Optionally, add visual feedback for dragging over
   };
 
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (isLoading) return; // Prevent drop while loading
+    if (isLoading) return;
 
     if (event.dataTransfer.files && event.dataTransfer.files[0]) {
       handleFileSelected(event.dataTransfer.files[0]);
@@ -96,15 +94,12 @@ export default function PublicUploadPage() {
     const uploadImage = async () => {
       setIsLoading(true);
       setError(null);
-      // No need to setPrediction(null) here, as it's cleared when a new file is selected
 
       const formData = new FormData();
       formData.append("file", selectedFile);
 
       try {
-        // Construct the full API endpoint using the environment variable
         const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/upload`;
-
         const response = await fetch(apiUrl, {
           method: "POST",
           body: formData,
@@ -124,17 +119,10 @@ export default function PublicUploadPage() {
         const data: PredictionResponse = await response.json();
         setPrediction(data);
       } catch (err: any) {
-        if (err.name === 'AbortError') {
-          console.log('Fetch aborted');
-          // Don't set error state for deliberate aborts unless it's a new upload starting
-        } else {
+        if (err.name !== 'AbortError') {
           setError(err.message || "An unknown error occurred during upload.");
         }
       } finally {
-        // Only set isLoading to false if this specific fetch operation is concluding.
-        // If a new file is selected rapidly, a new useEffect instance will manage its own isLoading.
-        // This check ensures that if a new file is selected while one is loading,
-        // the old effect's finally block doesn't prematurely set isLoading to false.
         if (!controller.signal.aborted) {
             setIsLoading(false);
         }
@@ -144,13 +132,9 @@ export default function PublicUploadPage() {
     uploadImage();
 
     return () => {
-      controller.abort(); // Abort fetch on cleanup (new file selected or component unmounts)
-      // If the effect for a new file starts, this cleanup will run.
-      // If we set isLoading to false here, it might fight with the new effect setting it to true.
-      // The finally block in uploadImage handles isLoading for its own operation.
+      controller.abort();
     };
   }, [selectedFile]);
-
 
   // useEffect for cleaning up object URL
   useEffect(() => {
@@ -169,11 +153,11 @@ export default function PublicUploadPage() {
     setError(null);
     setIsLoading(false);
     if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Important to allow re-selection of the same file
+      fileInputRef.current.value = "";
     }
   };
 
-  // Component for rendering the upload area and results
+  // Sub-component for rendering the dynamic upload area
   const UploadInteractionArea = () => {
     if (isLoading) {
       return (
@@ -185,47 +169,32 @@ export default function PublicUploadPage() {
               </svg>
               <p className="text-lg font-medium text-gray-300">Analyzing your image...</p>
               <p className="text-gray-500 mt-1">This might take a moment.</p>
-              {previewUrl && (
-                <img src={previewUrl} alt="Uploading preview" className="max-h-32 mx-auto mt-4 rounded-lg shadow-md opacity-50" />
-              )}
+              {previewUrl && <img src={previewUrl} alt="Uploading preview" className="max-h-32 mx-auto mt-4 rounded-lg shadow-md opacity-50" />}
           </div>
         </div>
       );
     }
-
     if (error) {
       return (
         <div className="border-2 border-dashed border-red-700 bg-red-900/30 rounded-lg p-12 text-center min-h-[280px] flex flex-col justify-center items-center">
           <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-red-500" />
           <p className="text-red-400 text-lg font-semibold mb-2">Upload Failed!</p>
           <p className="text-gray-300 mb-6 max-w-md mx-auto">{error}</p>
-          <Button
-            onClick={resetState}
-            className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
-          >
+          <Button onClick={resetState} className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
             Try Again
           </Button>
         </div>
       );
     }
-
     if (prediction) {
       return (
         <div className="text-center p-8 min-h-[280px] flex flex-col justify-center items-center">
-          {previewUrl && (
-            <img src={previewUrl} alt="Uploaded preview" className="max-h-60 mx-auto mb-6 rounded-lg shadow-lg" />
-          )}
+          {previewUrl && <img src={previewUrl} alt="Uploaded preview" className="max-h-60 mx-auto mb-6 rounded-lg shadow-lg" />}
           <CheckCircle2 className="h-12 w-12 mx-auto mb-4 text-green-500" />
           <h3 className="text-2xl font-semibold mb-2 text-gray-100">Analysis Complete</h3>
           <div className="mb-4">
             <span className="text-lg text-gray-300">Result: </span>
-            <Badge
-              className={`text-lg px-3 py-1 ${
-                prediction.result === "Fake"
-                  ? "bg-red-600 text-white border-red-700"
-                  : "bg-green-600 text-white border-green-700"
-              }`}
-            >
+            <Badge className={`text-lg px-3 py-1 ${prediction.result === "Fake" ? "bg-red-600 text-white border-red-700" : "bg-green-600 text-white border-green-700"}`}>
               {prediction.result}
             </Badge>
           </div>
@@ -233,93 +202,29 @@ export default function PublicUploadPage() {
             <span className="text-lg text-gray-300">Confidence: </span>
             <span className="text-xl font-bold text-purple-400">{prediction.prediction_percentage.toFixed(1)}%</span>
           </div>
-          <Button
-            onClick={resetState}
-            className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
-          >
+          <Button onClick={resetState} className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
             Upload Another Image
           </Button>
         </div>
       );
     }
-
-    // Initial state or if a file is selected but not yet uploading (e.g., if API call was manual)
-    // In our case, useEffect triggers upload automatically, so this state is mostly the initial one.
     return (
-      <div
-        className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors min-h-[280px] flex flex-col justify-center items-center
-                    ${isLoading ? 'cursor-default' : 'cursor-pointer hover:border-purple-500'}
-                    ${error ? 'border-red-700' : 'border-gray-700'}`}
-        onClick={handleDivClick}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileInputChange}
-          accept=".png,.jpg,.jpeg" // Matched with validation
-          className="hidden"
-          disabled={isLoading}
-        />
-        {previewUrl && selectedFile && !isLoading && !prediction && !error ? (
-            // This state is brief as useEffect triggers upload immediately.
-            // Useful if upload was manually triggered.
-            <>
-                <ImageIcon className="h-12 w-12 mx-auto mb-4 text-purple-500" />
-                <img src={previewUrl} alt="Selected preview" className="max-h-32 mx-auto mb-2 rounded-lg" />
-                <p className="text-lg font-medium text-gray-200">File: {selectedFile.name}</p>
-                <p className="text-gray-400 text-sm mb-4">Ready to analyze. Processing will start automatically.</p>
-                 <Button
-                    onClick={(e) => { e.stopPropagation(); handleDivClick(); }}
-                    className="mt-4 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
-                    disabled={isLoading}
-                >
-                    Change File
-                </Button>
-            </>
-        ) : (
-            <>
-                <Upload className="h-12 w-12 mx-auto mb-4 text-gray-500" />
-                <p className="text-lg font-medium text-gray-200">Drag and drop your image here</p>
-                <p className="text-gray-500 mt-1">or click to browse files</p>
-                <p className="text-gray-600 text-sm mt-3">Supports JPG, PNG, JPEG up to 5MB</p>
-                <Button
-                    onClick={(e) => { e.stopPropagation(); handleDivClick(); }}
-                    className="mt-6 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600"
-                    disabled={isLoading}
-                >
-                    Select File
-                </Button>
-            </>
-        )}
+      <div className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors min-h-[280px] flex flex-col justify-center items-center ${isLoading ? 'cursor-default' : 'cursor-pointer hover:border-purple-500'} ${error ? 'border-red-700' : 'border-gray-700'}`} onClick={handleDivClick} onDragOver={handleDragOver} onDrop={handleDrop}>
+        <input type="file" ref={fileInputRef} onChange={handleFileInputChange} accept=".png,.jpg,.jpeg" className="hidden" disabled={isLoading} />
+        <Upload className="h-12 w-12 mx-auto mb-4 text-gray-500" />
+        <p className="text-lg font-medium text-gray-200">Drag and drop your image here</p>
+        <p className="text-gray-500 mt-1">or click to browse files</p>
+        <p className="text-gray-600 text-sm mt-3">Supports JPG, PNG, JPEG up to 5MB</p>
+        <Button onClick={(e) => { e.stopPropagation(); handleDivClick(); }} className="mt-6 bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600" disabled={isLoading}>
+            Select File
+        </Button>
       </div>
     );
   };
 
-
   return (
-    <div className="flex min-h-screen flex-col bg-black text-white">
-      <header className="container mx-auto py-6 px-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <ShieldCheck className="h-8 w-8 text-purple-500" />
-          <span className="text-xl font-bold">DeepFake Detector</span>
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link href="/auth">
-            <Button variant="ghost" className="text-gray-300 hover:text-white">
-              Login
-            </Button>
-          </Link>
-          <Link href="/auth">
-            <Button className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
-              Sign Up
-            </Button>
-          </Link>
-        </div>
-      </header>
-
-      <main className="flex-1 container mx-auto px-4 py-12">
+    <>
+      <div className="container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
@@ -336,7 +241,7 @@ export default function PublicUploadPage() {
             </p>
           </div>
 
-          <Card className="bg-gray-900/50 border-gray-800 mb-8">
+          <Card className="bg-gray-900/50 border-gray-800 mb-8 backdrop-blur-sm">
             <CardHeader>
               <CardTitle>Upload Image for Analysis</CardTitle>
               <CardDescription className="text-gray-400">
@@ -349,35 +254,26 @@ export default function PublicUploadPage() {
             </CardContent>
           </Card>
 
-          {/* Rest of your page content remains the same */}
           <div className="grid md:grid-cols-3 gap-6 mb-12">
             <div className="bg-gray-900/30 rounded-lg p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-4 mx-auto">
-                1
-              </div>
+              <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-4 mx-auto">1</div>
               <h3 className="text-lg font-medium mb-2">Upload Image</h3>
               <p className="text-gray-400 text-sm">Upload any image you want to analyze for potential manipulation</p>
             </div>
             <div className="bg-gray-900/30 rounded-lg p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-4 mx-auto">
-                2
-              </div>
+              <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-4 mx-auto">2</div>
               <h3 className="text-lg font-medium mb-2">AI Analysis</h3>
-              <p className="text-gray-400 text-sm">
-                Our advanced AI analyzes the image for signs of deepfake manipulation
-              </p>
+              <p className="text-gray-400 text-sm">Our advanced AI analyzes the image for signs of deepfake manipulation</p>
             </div>
             <div className="bg-gray-900/30 rounded-lg p-6 text-center">
-              <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-4 mx-auto">
-                3
-              </div>
+              <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-4 mx-auto">3</div>
               <h3 className="text-lg font-medium mb-2">Get Results</h3>
               <p className="text-gray-400 text-sm">Receive a detailed report with confidence score and analysis</p>
             </div>
           </div>
 
-          <div className="bg-gray-900/20 border border-gray-800 rounded-lg p-6">
-            <h3 className="text-lg font-medium mb-4 flex items-center">
+          <div className="bg-gray-900/20 border border-gray-800 rounded-lg p-8">
+            <h3 className="text-xl font-medium mb-4 flex items-center">
               <Badge className="mr-2 bg-purple-500/20 text-purple-400">Pro Tip</Badge>
               Create an account for more features
             </h3>
@@ -403,13 +299,7 @@ export default function PublicUploadPage() {
             </Link>
           </div>
         </div>
-      </main>
-
-      <footer className="border-t border-gray-800 py-6">
-        <div className="container mx-auto px-4 text-center text-gray-400 text-sm">
-          <p>© 2025 DeepFake Detector. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }

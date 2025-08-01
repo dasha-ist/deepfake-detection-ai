@@ -1,19 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { Shield, CheckCircle, FileText, Scale, Users, AlertTriangle, Calendar } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { FileText, CheckCircle, Shield, Users, Scale, AlertTriangle, Calendar } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  ShieldCheck,
-} from "lucide-react"
 
 export default function TermsPage() {
   const [activeSection, setActiveSection] = useState("overview")
 
   const sections = [
-    { id: "overview", title: "Overview", icon: FileText }, 
+    { id: "overview", title: "Overview", icon: FileText },
     { id: "acceptance", title: "Acceptance", icon: CheckCircle },
     { id: "services", title: "Our Services", icon: Shield },
     { id: "usage", title: "Acceptable Use", icon: Users },
@@ -24,41 +19,8 @@ export default function TermsPage() {
   const lastUpdated = "July 15, 2025"
 
   return (
-    <div className="min-h-screen bg-black text-gray-300">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6 border-b border-gray-800/50 backdrop-blur-sm">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="relative">
-           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-8 w-8 text-purple-500" />
-           </div>
-          
-          </div>
-          <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-        </Link>
-        <div className="hidden md:flex items-center space-x-8">
-          <Link href="/features" className="text-gray-300 hover:text-white transition-colors">
-            Features
-          </Link>
-          <Link href="/how-it-works" className="text-gray-300 hover:text-white transition-colors">
-            How It Works
-          </Link>
-          <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
-            About
-          </Link>
-          <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-            Contact
-          </Link>
-          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
-            Login
-          </Link>
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium px-6 py-2 rounded-lg transition-all duration-200">
-            Try Now
-          </Button>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-16">
+    <>
+      <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
@@ -83,7 +45,7 @@ export default function TermsPage() {
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Sidebar Navigation */}
             <div className="lg:col-span-1">
-              <Card className="bg-gray-900/50 border-gray-800/50 sticky top-6 backdrop-blur-sm">
+              <Card className="bg-gray-900/50 border-gray-800/50 sticky top-24 backdrop-blur-sm">
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-6">Table of Contents</h3>
                   <nav className="space-y-2">
@@ -306,33 +268,6 @@ export default function TermsPage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800/50 py-12 backdrop-blur-sm">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="relative">
-                  <div className="flex items-center gap-2">
-                  <ShieldCheck className="h-8 w-8 text-purple-500" />
-                  </div>
-              </div>
-              <span className="font-bold">DeepFake Detector</span>
-            </div>
-            <div className="flex space-x-6">
-              <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">
-                Cookie Policy
-              </Link>
-              <Link href="/gdpr" className="text-gray-400 hover:text-white transition-colors">
-                GDPR
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </>
   )
 }

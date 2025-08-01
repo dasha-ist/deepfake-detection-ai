@@ -1,9 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
-import { Shield, Eye, Lock, Database, Users, FileText, Calendar, CheckCircle, ShieldCheck} from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Shield, Eye, Lock, Database, Users, FileText, Calendar } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 
 export default function PrivacyPage() {
@@ -21,43 +19,13 @@ export default function PrivacyPage() {
   const lastUpdated = "January 15, 2024"
 
   return (
-    <div className="min-h-screen bg-black text-gray-300">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6 border-b border-gray-800">
-        <Link href="/" className="flex items-center space-x-2">
-        <div className="flex items-center gap-2">
-            <ShieldCheck className="h-8 w-8 text-purple-500" />
-           </div>
-          <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-        </Link>
-        <div className="hidden md:flex items-center space-x-8">
-          <Link href="/features" className="text-gray-300 hover:text-white transition-colors">
-            Features
-          </Link>
-          <Link href="/how-it-works" className="text-gray-300 hover:text-white transition-colors">
-            How It Works
-          </Link>
-          <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
-            About
-          </Link>
-          <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-            Contact
-          </Link>
-          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
-            Login
-          </Link>
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-            Try Now
-          </Button>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-16">
+    <>
+      <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
-            <div className="inline-block bg-purple-600/20 text-purple-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              Legal
+            <div className="inline-block bg-purple-600/20 text-purple-400 px-6 py-3 rounded-full text-sm font-medium mb-8 border border-purple-500/30">
+            Legal
             </div>
             <h1 className="text-5xl md:text-6xl font-bold leading-tight">
             Privacy{" "}
@@ -77,7 +45,7 @@ export default function PrivacyPage() {
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Sidebar Navigation */}
             <div className="lg:col-span-1">
-              <Card className="bg-gray-900/50 border-gray-800 sticky top-6">
+              <Card className="bg-gray-900/50 border-gray-800 sticky top-24">
                 <CardContent className="p-6">
                   <h3 className="font-semibold mb-4">Table of Contents</h3>
                   <nav className="space-y-2">
@@ -106,10 +74,10 @@ export default function PrivacyPage() {
             {/* Content */}
             <div className="lg:col-span-3">
               <Card className="bg-gray-900/50 border-gray-800">
-                <CardContent className="p-8">
+                <CardContent className="p-10">
                   {activeSection === "overview" && (
                     <div className="space-y-6">
-                      <h2 className="text-2xl font-bold text-purple-400">Overview</h2>
+                      <h2 className="text-3xl font-bold text-purple-400">Overview</h2>
                       <div className="space-y-4 text-gray-300 leading-relaxed">
                         <p>
                           At DeepFake Detector, we are committed to protecting your privacy and ensuring the security of
@@ -121,13 +89,13 @@ export default function PrivacyPage() {
                           with sensitive media content. This policy is designed to be transparent about our data
                           practices and your rights regarding your personal information.
                         </p>
-                        <div className="bg-purple-600/10 border border-purple-500/30 p-4 rounded-lg">
-                          <h4 className="font-semibold text-purple-400 mb-2">Key Principles</h4>
-                          <ul className="space-y-1 text-sm">
-                            <li>• We only collect data necessary for our services</li>
-                            <li>• Your uploaded media is processed securely and not stored permanently</li>
-                            <li>• We never sell your personal information to third parties</li>
-                            <li>• You have full control over your data and can request deletion at any time</li>
+                        <div className="bg-purple-600/10 border border-purple-500/30 p-6 rounded-xl mt-4">
+                          <h4 className="font-semibold text-purple-400 mb-3">Key Principles</h4>
+                          <ul className="space-y-2 text-sm list-disc list-inside">
+                            <li>We only collect data necessary for our services.</li>
+                            <li>Your uploaded media is processed securely and not stored permanently.</li>
+                            <li>We never sell your personal information to third parties.</li>
+                            <li>You have full control over your data and can request deletion at any time.</li>
                           </ul>
                         </div>
                       </div>
@@ -136,9 +104,9 @@ export default function PrivacyPage() {
 
                   {activeSection === "collection" && (
                     <div className="space-y-6">
-                      <h2 className="text-2xl font-bold text-purple-400">Data Collection</h2>
-                      <div className="space-y-4 text-gray-300 leading-relaxed">
-                        <h3 className="text-lg font-semibold">Information We Collect</h3>
+                      <h2 className="text-3xl font-bold text-purple-400">Data Collection</h2>
+                      <div className="space-y-6 text-gray-300 leading-relaxed">
+                        <h3 className="text-xl font-semibold">Information We Collect</h3>
                         <div className="space-y-4">
                           <div>
                             <h4 className="font-semibold mb-2">Account Information</h4>
@@ -175,25 +143,25 @@ export default function PrivacyPage() {
 
                   {activeSection === "usage" && (
                     <div className="space-y-6">
-                      <h2 className="text-2xl font-bold text-purple-400">How We Use Data</h2>
-                      <div className="space-y-4 text-gray-300 leading-relaxed">
-                        <h3 className="text-lg font-semibold">Primary Uses</h3>
+                      <h2 className="text-3xl font-bold text-purple-400">How We Use Data</h2>
+                      <div className="space-y-6 text-gray-300 leading-relaxed">
+                        <h3 className="text-xl font-semibold">Primary Uses</h3>
                         <ul className="space-y-2 list-disc list-inside">
-                          <li>Provide deepfake detection and analysis services</li>
-                          <li>Improve our AI models and detection accuracy</li>
-                          <li>Communicate with you about your account and our services</li>
-                          <li>Ensure platform security and prevent abuse</li>
-                          <li>Comply with legal obligations and law enforcement requests</li>
+                          <li>Provide deepfake detection and analysis services.</li>
+                          <li>Improve our AI models and detection accuracy.</li>
+                          <li>Communicate with you about your account and our services.</li>
+                          <li>Ensure platform security and prevent abuse.</li>
+                          <li>Comply with legal obligations and law enforcement requests.</li>
                         </ul>
 
-                        <h3 className="text-lg font-semibold mt-6">AI Model Training</h3>
+                        <h3 className="text-xl font-semibold mt-6">AI Model Training</h3>
                         <p>
                           We may use anonymized and aggregated data from analyses to improve our detection models.
                           Individual media files are never used for training without explicit consent, and all training
                           data is stripped of personally identifiable information.
                         </p>
 
-                        <div className="bg-green-600/10 border border-green-500/30 p-4 rounded-lg">
+                        <div className="bg-green-600/10 border border-green-500/30 p-6 rounded-xl mt-4">
                           <h4 className="font-semibold text-green-400 mb-2">Data Minimization</h4>
                           <p className="text-sm">
                             We follow the principle of data minimization - we only collect and process the minimum
@@ -206,9 +174,9 @@ export default function PrivacyPage() {
 
                   {activeSection === "sharing" && (
                     <div className="space-y-6">
-                      <h2 className="text-2xl font-bold text-purple-400">Data Sharing</h2>
-                      <div className="space-y-4 text-gray-300 leading-relaxed">
-                        <h3 className="text-lg font-semibold">When We Share Information</h3>
+                      <h2 className="text-3xl font-bold text-purple-400">Data Sharing</h2>
+                      <div className="space-y-6 text-gray-300 leading-relaxed">
+                        <h3 className="text-xl font-semibold">When We Share Information</h3>
                         <div className="space-y-4">
                           <div>
                             <h4 className="font-semibold mb-2">Service Providers</h4>
@@ -233,12 +201,12 @@ export default function PrivacyPage() {
                           </div>
                         </div>
 
-                        <div className="bg-red-600/10 border border-red-500/30 p-4 rounded-lg">
-                          <h4 className="font-semibold text-red-400 mb-2">What We Never Do</h4>
-                          <ul className="space-y-1 text-sm">
-                            <li>• Sell your personal information to advertisers or data brokers</li>
-                            <li>• Share your uploaded media with unauthorized parties</li>
-                            <li>• Use your data for purposes other than those stated in this policy</li>
+                        <div className="bg-red-600/10 border border-red-500/30 p-6 rounded-xl mt-4">
+                          <h4 className="font-semibold text-red-400 mb-3">What We Never Do</h4>
+                          <ul className="space-y-2 text-sm list-disc list-inside">
+                            <li>Sell your personal information to advertisers or data brokers.</li>
+                            <li>Share your uploaded media with unauthorized parties.</li>
+                            <li>Use your data for purposes other than those stated in this policy.</li>
                           </ul>
                         </div>
                       </div>
@@ -247,13 +215,13 @@ export default function PrivacyPage() {
 
                   {activeSection === "security" && (
                     <div className="space-y-6">
-                      <h2 className="text-2xl font-bold text-purple-400">Security</h2>
-                      <div className="space-y-4 text-gray-300 leading-relaxed">
-                        <h3 className="text-lg font-semibold">Security Measures</h3>
+                      <h2 className="text-3xl font-bold text-purple-400">Security</h2>
+                      <div className="space-y-6 text-gray-300 leading-relaxed">
+                        <h3 className="text-xl font-semibold">Security Measures</h3>
                         <div className="grid md:grid-cols-2 gap-4">
                           <div className="bg-gray-800/50 p-4 rounded-lg">
                             <h4 className="font-semibold mb-2">Encryption</h4>
-                            <p className="text-sm">All data is encrypted in transit (TLS 1.3).</p>
+                            <p className="text-sm">All data is encrypted in transit (TLS 1.3) and at rest (AES-256).</p>
                           </div>
                           <div className="bg-gray-800/50 p-4 rounded-lg">
                             <h4 className="font-semibold mb-2">Access Controls</h4>
@@ -271,7 +239,7 @@ export default function PrivacyPage() {
                           </div>
                         </div>
 
-                        <h3 className="text-lg font-semibold mt-6">Incident Response</h3>
+                        <h3 className="text-xl font-semibold mt-6">Incident Response</h3>
                         <p>
                           In the unlikely event of a security breach, we will notify affected users within 72 hours and
                           take immediate steps to secure the system and prevent further unauthorized access.
@@ -282,9 +250,9 @@ export default function PrivacyPage() {
 
                   {activeSection === "rights" && (
                     <div className="space-y-6">
-                      <h2 className="text-2xl font-bold text-purple-400">Your Rights</h2>
-                      <div className="space-y-4 text-gray-300 leading-relaxed">
-                        <h3 className="text-lg font-semibold">Data Subject Rights</h3>
+                      <h2 className="text-3xl font-bold text-purple-400">Your Rights</h2>
+                      <div className="space-y-6 text-gray-300 leading-relaxed">
+                        <h3 className="text-xl font-semibold">Data Subject Rights</h3>
                         <div className="space-y-4">
                           <div className="flex items-start space-x-3">
                             <div className="bg-purple-600/20 p-2 rounded-lg mt-1">
@@ -326,7 +294,7 @@ export default function PrivacyPage() {
                           </div>
                         </div>
 
-                        <h3 className="text-lg font-semibold mt-6">How to Exercise Your Rights</h3>
+                        <h3 className="text-xl font-semibold mt-6">How to Exercise Your Rights</h3>
                         <p>
                           To exercise any of these rights, please contact us at{" "}
                           <a
@@ -338,7 +306,7 @@ export default function PrivacyPage() {
                           . We will respond to your request within 30 days.
                         </p>
 
-                        <div className="bg-blue-600/10 border border-blue-500/30 p-4 rounded-lg">
+                        <div className="bg-blue-600/10 border border-blue-500/30 p-6 rounded-xl mt-4">
                           <h4 className="font-semibold text-blue-400 mb-2">Contact Our Data Protection Officer</h4>
                           <p className="text-sm">
                             For privacy-related questions or concerns, you can reach our Data Protection Officer at{" "}
@@ -356,33 +324,6 @@ export default function PrivacyPage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800/50 py-12 backdrop-blur-sm">
-  <div className="container mx-auto px-6">
-    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-      
-      {/* Logo + Title */}
-      <Link href="/" className="flex items-center gap-2">
-        <ShieldCheck className="h-8 w-8 text-purple-500" />
-        <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-      </Link>
-
-      {/* Navigation Links - Visible on all screens, stacked on small screens */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center">
-        <Link href="/gdpr" className="text-gray-400 hover:text-white transition-colors">
-          GDPR
-        </Link>
-        <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
-          Terms of Service
-        </Link>
-        <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">
-          Cookie Policy
-        </Link>
-      </div>
-    </div>
-  </div>
-</footer>
-    </div>
+    </>
   )
 }

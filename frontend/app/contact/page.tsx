@@ -1,10 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import Link from "next/link"
-import { Shield, Mail, Send, CheckCircle, ShieldCheck } from "lucide-react"
+import { Mail, Send, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -34,38 +32,8 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-gray-300">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between p-6 border-b border-gray-800">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-8 w-8 text-purple-500" />
-           </div>
-          <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-        </Link>
-        <div className="hidden md:flex items-center space-x-8">
-          <Link href="/features" className="text-gray-300 hover:text-white transition-colors">
-            Features
-          </Link>
-          <Link href="/how-it-works" className="text-gray-300 hover:text-white transition-colors">
-            How It Works
-          </Link>
-          <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
-            About
-          </Link>
-          <Link href="/contact" className="text-white">
-            Contact
-          </Link>
-          <Link href="/auth" className="text-gray-300 hover:text-white transition-colors">
-            Login
-          </Link>
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium px-8 py-3 rounded-lg transition-all duration-200 transform hover:scale-105">
-            Try Now
-          </Button>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-6 py-16">
+    <>
+      <div className="container mx-auto px-6 py-16 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16 bg-gradient-to-r from-purple-600/10 to-blue-600/10 py-16 rounded-2xl border border-purple-500/20">
@@ -209,33 +177,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-800/50 py-12 backdrop-blur-sm">
-  <div className="container mx-auto px-6">
-    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-      
-      {/* Logo + Title */}
-      <Link href="/" className="flex items-center gap-2">
-        <ShieldCheck className="h-8 w-8 text-purple-500" />
-        <span className="text-xl font-bold text-gray-300">DeepFake Detector</span>
-      </Link>
-
-      {/* Navigation Links - Visible on all screens, stacked on small screens */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center">
-        <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-          Privacy Policy
-        </Link>
-        <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
-          Terms of Service
-        </Link>
-        <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
-          About
-        </Link>
-      </div>
-    </div>
-  </div>
-</footer>
-    </div>
+    </>
   )
 }

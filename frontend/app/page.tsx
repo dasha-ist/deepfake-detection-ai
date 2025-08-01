@@ -1,4 +1,4 @@
-// frontend/app/page.tsx
+// frontend/app/(main)/page.tsx
 "use client"
 
 import Link from "next/link"
@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
-  ShieldCheck,
   ImageIcon,
   Video,
   Headphones,
@@ -25,52 +24,12 @@ import { FloatingElement } from "@/components/floating-element"
 import { RevealImage } from "@/components/reveal-image"
 import { MagneticButton } from "@/components/magnetic-button"
 import { PulseDot } from "@/components/pulse-dot"
-import { AuthModal } from "@/components/auth-modal"
-
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
-      {/* Navigation */}
-      <header className="container mx-auto py-6 px-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <FloatingElement floatIntensity={0.5} rotateIntensity={2} duration={4}>
-            <ShieldCheck className="h-8 w-8 text-purple-500" />
-          </FloatingElement>
-          <span className="text-xl font-bold">DeepFake Detector</span>
-        </div>
-        <nav className="hidden md:flex items-center gap-6">
-          <Link href="/features" className="text-gray-300 hover:text-white transition-colors">
-            Features
-          </Link>
-          <Link href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">
-            How It Works
-          </Link>
-          <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
-            Contact
-          </Link>
-          <Link href="/coming-soon" className="text-gray-300 hover:text-white transition-colors">
-            Pricing
-          </Link>
-        </nav>
-        <div className="flex items-center gap-4">
-          <AuthModal>
-            <Button variant="ghost" className="hidden md:inline-flex text-gray-300 hover:text-white">
-              Login
-            </Button>
-          </AuthModal>
-          <MagneticButton intensity={0.8}>
-            <Link href="/upload">
-            <Button className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600">
-              Try Now
-            </Button>
-            </Link>
-          </MagneticButton>
-        </div>
-      </header>
-
+    <>
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 flex flex-col lg:flex-row items-center gap-12">
+      <section className="container mx-auto px-4 py-20 flex flex-col lg:flex-row items-center gap-12 relative z-10">
         <AnimatedSection className="flex-1 space-y-8" animation="fade-up" delay={0.2}>
           <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
             AI-Powered Forensics
@@ -87,7 +46,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
             <MagneticButton intensity={1}>
-            <Link href="/upload">
+              <Link href="/upload">
                 <Button className="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 h-12 px-8 text-lg">
                     Start Scanning
                 </Button>
@@ -99,8 +58,18 @@ export default function Home() {
                 </Button>
             </Link>
           </div>
+          <div className="flex items-center gap-4 pt-6">
+          <div className="flex -space-x-2">
+            <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-xs font-bold">⚡</div>
+            <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-xs font-bold">3s</div>
+            <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-xs">✓</div>
+            </div>
+            <p className="text-gray-400">
+                <span className="text-white font-medium">Results in</span> seconds with accuracy
+            </p>
+            </div>
         </AnimatedSection>
-        <AnimatedSection className="flex-1 relative" animation="scale-in" delay={0.4}>
+        <AnimatedSection className="flex-1 relative z-10" animation="scale-in" delay={0.4}>
           <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-2xl blur opacity-30"></div>
           <div className="relative bg-black rounded-2xl overflow-hidden border border-gray-800">
             <RevealImage
@@ -121,7 +90,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <ParallaxSection className="py-20" speed={0.3} backgroundEffect="particles" intensity={0.7}>
+      <ParallaxSection id="features" className="py-20 relative z-10" speed={0.3}>
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-16" animation="fade-up">
             <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
@@ -223,7 +192,7 @@ export default function Home() {
       </ParallaxSection>
 
       {/* How It Works Section */}
-      <ParallaxSection className="py-20" speed={0.4} backgroundEffect="wave" intensity={0.8}>
+      <ParallaxSection className="py-20 relative z-10" speed={0.4}>
         <div id="how-it-works" className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-16" animation="fade-up">
             <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
@@ -238,16 +207,10 @@ export default function Home() {
           </AnimatedSection>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* Connecting line */}
-            <div
-              className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-500 hidden md:block"
-              style={{ transform: "translateY(-50%)" }}
-            ></div>
-
-            <AnimatedSection className="relative step-card" animation="fade-up" delay={0.2} yOffset={80}>
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-2xl blur opacity-20"></div>
-              <div className="relative bg-gray-900/50 border border-gray-800 rounded-2xl p-8 h-full">
-                <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-6 relative z-10">
+            <AnimatedSection className="relative step-card group" animation="fade-up" delay={0.2} yOffset={80}>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
+              <div className="relative bg-gray-900/70 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-8 h-full group-hover:bg-gray-900/80 transition-all duration-300">
+                <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-6 relative z-10 group-hover:bg-purple-800/60 transition-colors duration-300">
                   1
                 </div>
                 <h3 className="text-xl font-bold mb-4">Upload Media</h3>
@@ -258,10 +221,10 @@ export default function Home() {
               </div>
             </AnimatedSection>
 
-            <AnimatedSection className="relative step-card" animation="fade-up" delay={0.4} yOffset={80}>
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-2xl blur opacity-20"></div>
-              <div className="relative bg-gray-900/50 border border-gray-800 rounded-2xl p-8 h-full">
-                <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-6 relative z-10">
+            <AnimatedSection className="relative step-card group" animation="fade-up" delay={0.4} yOffset={80}>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
+              <div className="relative bg-gray-900/70 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-8 h-full group-hover:bg-gray-900/80 transition-all duration-300">
+                <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-6 relative z-10 group-hover:bg-purple-800/60 transition-colors duration-300">
                   2
                 </div>
                 <h3 className="text-xl font-bold mb-4">AI Analysis</h3>
@@ -272,10 +235,10 @@ export default function Home() {
               </div>
             </AnimatedSection>
 
-            <AnimatedSection className="relative step-card" animation="fade-up" delay={0.6} yOffset={80}>
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-2xl blur opacity-20"></div>
-              <div className="relative bg-gray-900/50 border border-gray-800 rounded-2xl p-8 h-full">
-                <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-6 relative z-10">
+            <AnimatedSection className="relative step-card group" animation="fade-up" delay={0.6} yOffset={80}>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-300"></div>
+              <div className="relative bg-gray-900/70 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-8 h-full group-hover:bg-gray-900/80 transition-all duration-300">
+                <div className="w-12 h-12 rounded-full bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-6 relative z-10 group-hover:bg-purple-800/60 transition-colors duration-300">
                   3
                 </div>
                 <h3 className="text-xl font-bold mb-4">Get Results</h3>
@@ -289,9 +252,9 @@ export default function Home() {
         </div>
       </ParallaxSection>
 
-      {/* Demo Section */}
-      <section className="container mx-auto px-4 py-20">
-        <div id="learn-more" className="flex flex-col lg:flex-row items-center gap-12">
+      {/* Interactive Demo Section */}
+      <section id="learn-more" className="container mx-auto px-4 py-20 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center gap-12">
           <AnimatedSection className="flex-1 space-y-8" animation="fade-up">
             <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
               Interactive Demo
@@ -374,8 +337,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mobile App Preview */}
-      <ParallaxSection className="py-20" speed={0.2} backgroundEffect="gradient" intensity={0.6}>
+      {/* Mobile Experience Section */}
+      <ParallaxSection className="py-20 relative z-10" speed={0.2}>
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-16" animation="fade-up">
             <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
@@ -416,11 +379,11 @@ export default function Home() {
         </div>
       </ParallaxSection>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20">
+      {/* Get Started Section */}
+      <section className="container mx-auto px-4 py-20 relative z-10">
         <AnimatedSection className="relative" animation="scale-in" delay={0.2}>
           <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-500 rounded-3xl blur opacity-30"></div>
-          <div className="relative bg-gray-900/50 border border-gray-800 rounded-3xl p-12 text-center">
+          <div className="relative bg-gray-900/50 border border-gray-800 rounded-3xl p-12 text-center backdrop-blur-sm">
             <Badge className="px-5 py-1.5 bg-purple-900/30 text-purple-400 hover:bg-purple-900/40 border-purple-800 text-sm mb-4">
               Get Started
             </Badge>
@@ -440,140 +403,6 @@ export default function Home() {
           </div>
         </AnimatedSection>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-950 py-12 mt-20">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-            <div className="flex items-center gap-2 mb-4 md:mb-0">
-              <FloatingElement floatIntensity={0.5} rotateIntensity={2} duration={4}>
-                <ShieldCheck className="h-8 w-8 text-purple-500" />
-              </FloatingElement>
-              <span className="text-xl font-bold">DeepFake Detector</span>
-            </div>
-            <div className="flex gap-4">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-twitter"
-                >
-                  <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-                </svg>
-              </Button>
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-linkedin"
-                >
-                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                  <rect width="4" height="12" x="2" y="9" />
-                  <circle cx="4" cy="4" r="2" />
-                </svg>
-              </Button>
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-github"
-                >
-                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                  <path d="M9 18c-4.51 2-5-2-7-2" />
-                </svg>
-              </Button>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 pb-4 mb-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div>
-                <h3 className="font-bold mb-4">Product</h3>
-                <ul className="space-y-2">
-                  <li>
-                    <Link href="/coming-soon" className="text-gray-400 hover:text-white">
-                      Pricing
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/coming-soon" className="text-gray-400 hover:text-white">
-                      API
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-bold mb-4">Resources</h3>
-                <ul className="space-y-2">
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-bold mb-4">Company</h3>
-                <ul className="space-y-2">
-                  <li>
-                    <Link href="/about" className="text-gray-400 hover:text-white">
-                      About
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/contact" className="text-gray-400 hover:text-white">
-                      Contact
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-bold mb-4">Legal</h3>
-                <ul className="space-y-2">
-                  <li>
-                    <Link href="/privacy" className="text-gray-400 hover:text-white">
-                      Privacy Policy
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/terms" className="text-gray-400 hover:text-white">
-                      Terms of Service
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/cookies" className="text-gray-400 hover:text-white">
-                      Cookie Policy
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/gdpr" className="text-gray-400 hover:text-white">
-                      GDPR
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>© 2025 DeepFake Detector. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </>
   )
 }
