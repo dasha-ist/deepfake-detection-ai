@@ -53,3 +53,4 @@ jobs:
             echo "4. Pruning unused Docker images..."
             docker image prune -f
             echo "--- Deployment successful! ---"
+            
