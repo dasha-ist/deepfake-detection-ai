@@ -1,5 +1,3 @@
-# .github/workflows/google-cloudrun-source.yml
-
 name: 'Deploy Full Stack to VM via SSH'
 
 on:
