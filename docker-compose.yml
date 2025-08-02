@@ -1,4 +1,5 @@
 # docker-compose.yml (at project root)
+
 services:
   frontend:
     build:
@@ -23,17 +24,13 @@ services:
     env_file:
       - ./.env
     volumes:
-      # --- THIS IS THE CORRECTED PART ---
-      # Mount the entire local backend directory into the container's /app directory.
-      # This enables hot-reloading for development and ensures the model is present.
+      # Mount the local backend directory into the container for hot-reloading
       - ./backend:/app
-      
-      # We can keep the named volume for uploads if we want to separate them,
-      # but mounting the whole directory is often sufficient for local dev.
-      # For clarity, let's keep it.
+      # Use a named volume to persist user uploads
       - backend_uploads:/app/uploads
-      # --- END OF CORRECTION ---
     restart: unless-stopped
 
+# Correctly defines the named volume, resolving the original YAML syntax error.
+# The trailing colon (:) has been replaced with the correct syntax.
 volumes:
-  backend_uploads:
+  backend_uploads: {}
