@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Enable the optimized standalone output for Docker
+  output: 'standalone',
+
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -9,6 +12,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;

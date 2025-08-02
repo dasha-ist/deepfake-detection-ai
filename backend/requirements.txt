@@ -13,3 +13,6 @@ tqdm
 flask-cors==6.0.0
 gunicorn
 dotenv
+supabase
+PyJWT #token system for the authentication
+python-dotenv

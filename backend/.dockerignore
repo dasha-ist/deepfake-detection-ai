@@ -1,0 +1,25 @@
+# backend/.dockerignore
+# Python virtual environment
+venv
+.venv
+
+# Python cache files
+__pycache__
+*.pyc
+
+# Local environment variables file (NEVER include in Docker)
+.env
+.env.*
+
+# IDE and OS-specific files
+.idea/
+.vscode/
+.DS_Store
+
+# Test artifacts
+.pytest_cache/
+coverage.xml
+
+# AI Models
+*.keras
+

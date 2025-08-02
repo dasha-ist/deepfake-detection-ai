@@ -2,23 +2,37 @@
 services:
   frontend:
     build:
-      context: ./frontend        # Build context is the frontend/ directory
-      dockerfile: Dockerfile # Dockerfile is named Dockerfile.frontend inside frontend/
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     ports:
       - "3000:3000"
+    env_file:
+      - ./.env
     restart: unless-stopped
+    depends_on:
+      - backend
 
   backend:
     build:
-      context: ./backend         # Build context is the backend/ directory
-      dockerfile: Dockerfile # Dockerfile is named Dockerfile.backend inside backend/
+      context: ./backend
     ports:
       - "5000:5000"
+    env_file:
+      - ./.env
     volumes:
-      # Mount the model file (relative to docker-compose.yml location)
-      - ./backend/deepfake_detector_model.keras:/app/deepfake_detector_model.keras:ro
-      # Persist the uploads directory
+      # --- THIS IS THE CORRECTED PART ---
+      # Mount the entire local backend directory into the container's /app directory.
+      # This enables hot-reloading for development and ensures the model is present.
+      - ./backend:/app
+      
+      # We can keep the named volume for uploads if we want to separate them,
+      # but mounting the whole directory is often sufficient for local dev.
+      # For clarity, let's keep it.
       - backend_uploads:/app/uploads
+      # --- END OF CORRECTION ---
     restart: unless-stopped
 
 volumes:
